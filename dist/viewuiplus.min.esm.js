@@ -1,22 +1,3 @@
-var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key2, value) => key2 in obj ? __defProp(obj, key2, { enumerable: true, configurable: true, writable: true, value }) : obj[key2] = value;
-var __spreadValues = (a, b) => {
-  for (var prop2 in b || (b = {}))
-    if (__hasOwnProp.call(b, prop2))
-      __defNormalProp(a, prop2, b[prop2]);
-  if (__getOwnPropSymbols)
-    for (var prop2 of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop2))
-        __defNormalProp(a, prop2, b[prop2]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 import { nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, renderSlot, withDirectives, vShow, resolveComponent, createBlock, Transition, withCtx, createVNode, createCommentVNode, resolveDynamicComponent, inject, withModifiers, toDisplayString, h, Teleport, mergeProps, getCurrentInstance, Fragment, renderList, createTextVNode, withKeys, vModelText, resolveDirective, vModelCheckbox, TransitionGroup, createApp, normalizeProps, guardReactiveProps, defineComponent, toHandlers, Comment, Text, setBlockTracking, createSlots } from "vue";
 const isClient = typeof window !== "undefined";
 const on = function() {
@@ -852,7 +833,7 @@ function _sfc_render$2b(_ctx, _cache, $props, $setup, $data, $options) {
       ], 6)
     ]),
     _: 3
-  }, 8, ["offset-top", "offset-bottom", "onOnChange"]);
+  }, 40, ["offset-top", "offset-bottom", "onOnChange"]);
 }
 var Anchor = /* @__PURE__ */ _export_sfc(_sfc_main$2s, [["render", _sfc_render$2b]]);
 function random(len = 32) {
@@ -3227,84 +3208,101 @@ const nonCaptureEventHandler = function onNonCaptureEvent(event) {
 const getEventHandler = function _getEventHandler(useCapture) {
   return useCapture ? captureEventHandler : nonCaptureEventHandler;
 };
-const directive = Object.defineProperties({}, {
-  $_captureInstances: {
-    value: captureInstances
-  },
-  $_nonCaptureInstances: {
-    value: nonCaptureInstances
-  },
-  $_onCaptureEvent: {
-    value: captureEventHandler
-  },
-  $_onNonCaptureEvent: {
-    value: nonCaptureEventHandler
-  },
-  beforeMount: {
-    value: function bind(el, binding) {
-      if (typeof binding.value !== "function") {
-        throw new TypeError("Binding value must be a function.");
-      }
-      let eventType;
-      const modifiers = binding.modifiers;
-      if (modifiers.click)
-        eventType = "click";
-      else if (modifiers.mousedown)
-        eventType = "mousedown";
-      else if (modifiers.touchstart)
-        eventType = "touchstart";
-      else
-        eventType = CLICK;
-      const useCapture = binding.arg;
-      const normalisedBinding = __spreadValues(__spreadValues({}, binding), {
-        modifiers: __spreadValues(__spreadValues({}, {
-          capture: false,
-          prevent: false,
-          stop: false
-        }), binding.modifiers)
-      });
-      const instances = useCapture ? captureInstances : nonCaptureInstances;
-      if (!Array.isArray(instances[eventType])) {
-        instances[eventType] = [];
-      }
-      if (instances[eventType].push({ el, binding: normalisedBinding }) === 1) {
-        if (typeof document === "object" && document) {
-          document.addEventListener(eventType, getEventHandler(useCapture), useCapture);
+const directive = Object.defineProperties(
+  {},
+  {
+    $_captureInstances: {
+      value: captureInstances
+    },
+    $_nonCaptureInstances: {
+      value: nonCaptureInstances
+    },
+    $_onCaptureEvent: {
+      value: captureEventHandler
+    },
+    $_onNonCaptureEvent: {
+      value: nonCaptureEventHandler
+    },
+    beforeMount: {
+      value: function bind(el, binding) {
+        if (typeof binding.value !== "function") {
+          throw new TypeError("Binding value must be a function.");
         }
-      }
-    }
-  },
-  unmounted: {
-    value: function unbind(el) {
-      const compareElements = function _compareElements(item) {
-        return item.el !== el;
-      };
-      const instancesIteratee = function _instancesIteratee(instances) {
-        const instanceKeys = Object.keys(instances);
-        if (instanceKeys.length) {
-          const useCapture = instances === captureInstances;
-          const keysIteratee = function _keysIteratee(eventName) {
-            const newInstance = instances[eventName].filter(compareElements);
-            if (newInstance.length) {
-              instances[eventName] = newInstance;
-            } else {
-              if (typeof document === "object" && document) {
-                document.removeEventListener(eventName, getEventHandler(useCapture), useCapture);
-              }
-              delete instances[eventName];
+        let eventType;
+        const modifiers = binding.modifiers;
+        if (modifiers.click)
+          eventType = "click";
+        else if (modifiers.mousedown)
+          eventType = "mousedown";
+        else if (modifiers.touchstart)
+          eventType = "touchstart";
+        else
+          eventType = CLICK;
+        const useCapture = binding.arg;
+        const normalisedBinding = {
+          ...binding,
+          ...{
+            modifiers: {
+              ...{
+                capture: false,
+                prevent: false,
+                stop: false
+              },
+              ...binding.modifiers
             }
-          };
-          instanceKeys.forEach(keysIteratee);
+          }
+        };
+        const instances = useCapture ? captureInstances : nonCaptureInstances;
+        if (!Array.isArray(instances[eventType])) {
+          instances[eventType] = [];
         }
-      };
-      instancesList.forEach(instancesIteratee);
+        if (instances[eventType].push({ el, binding: normalisedBinding }) === 1) {
+          if (typeof document === "object" && document) {
+            document.addEventListener(
+              eventType,
+              getEventHandler(useCapture),
+              useCapture
+            );
+          }
+        }
+      }
+    },
+    unmounted: {
+      value: function unbind(el) {
+        const compareElements = function _compareElements(item) {
+          return item.el !== el;
+        };
+        const instancesIteratee = function _instancesIteratee(instances) {
+          const instanceKeys = Object.keys(instances);
+          if (instanceKeys.length) {
+            const useCapture = instances === captureInstances;
+            const keysIteratee = function _keysIteratee(eventName) {
+              const newInstance = instances[eventName].filter(compareElements);
+              if (newInstance.length) {
+                instances[eventName] = newInstance;
+              } else {
+                if (typeof document === "object" && document) {
+                  document.removeEventListener(
+                    eventName,
+                    getEventHandler(useCapture),
+                    useCapture
+                  );
+                }
+                delete instances[eventName];
+              }
+            };
+            instanceKeys.forEach(keysIteratee);
+          }
+        };
+        instancesList.forEach(instancesIteratee);
+      }
+    },
+    version: {
+      enumerable: true,
+      value: "3.7.1"
     }
-  },
-  version: {
-    enumerable: true,
-    value: "3.7.1"
   }
-});
+);
 var mixinsForm = {
   inject: {
     FormInstance: {
@@ -4259,16 +4257,18 @@ const _sfc_main$2m = {
       const group = this.OptionGroupInstance;
       const { id, value, instance } = this;
       if (group) {
-        group.optionList.push(__spreadProps(__spreadValues({}, instance), {
+        group.optionList.push({
+          ...instance,
           id,
           tag: "option"
-        }));
+        });
       }
       if (select2) {
-        select2.slotOptions.push(__spreadProps(__spreadValues({}, instance), {
+        select2.slotOptions.push({
+          ...instance,
           id,
           tag: "option"
-        }));
+        });
         select2.slotOptionsMap.set(value, instance);
         const { modelValue } = select2;
         modelValue && modelValue.length && select2.lazyUpdateValue(true);
@@ -6167,13 +6167,14 @@ const _sfc_main$2c = {
     if (this.showSlot) {
       slots.push(h("span", {
         ref: "slot"
-      }), this.$slots.default());
+      }, this.$slots.default()));
     }
-    return h(tag, __spreadValues({
+    return h(tag, {
       class: this.classes,
       disabled: this.itemDisabled,
-      onClick: this.handleClickLink
-    }, this.tagProps), slots);
+      onClick: this.handleClickLink,
+      ...this.tagProps
+    }, slots);
   }
 };
 const prefixCls$19 = "ivu-btn-group";
@@ -6515,7 +6516,7 @@ var dayjs_min = { exports: {} };
     }, p: function(t3) {
       return { M: f, y: c, w: o, d: a, D: d, h: u, m: s, s: i, ms: r, Q: h2 }[t3] || String(t3 || "").toLowerCase().replace(/s$/, "");
     }, u: function(t3) {
-      return t3 === void 0;
+      return void 0 === t3;
     } }, v = "en", D = {};
     D[v] = M;
     var p = function(t3) {
@@ -6524,7 +6525,7 @@ var dayjs_min = { exports: {} };
       var i2;
       if (!e2)
         return v;
-      if (typeof e2 == "string") {
+      if ("string" == typeof e2) {
         var s2 = e2.toLowerCase();
         D[s2] && (i2 = s2), n2 && (D[s2] = n2, i2 = s2);
         var u2 = e2.split("-");
@@ -6538,7 +6539,7 @@ var dayjs_min = { exports: {} };
     }, w = function(t3, e2) {
       if (p(t3))
         return t3.clone();
-      var n2 = typeof e2 == "object" ? e2 : {};
+      var n2 = "object" == typeof e2 ? e2 : {};
       return n2.date = t3, n2.args = arguments, new _(n2);
     }, O = g;
     O.l = S, O.i = p, O.w = function(t3, e2) {
@@ -6552,13 +6553,13 @@ var dayjs_min = { exports: {} };
       return m2.parse = function(t3) {
         this.$d = function(t4) {
           var e2 = t4.date, n2 = t4.utc;
-          if (e2 === null)
+          if (null === e2)
             return new Date(NaN);
           if (O.u(e2))
             return new Date();
           if (e2 instanceof Date)
             return new Date(e2);
-          if (typeof e2 == "string" && !/Z$/i.test(e2)) {
+          if ("string" == typeof e2 && !/Z$/i.test(e2)) {
             var r2 = e2.match(l);
             if (r2) {
               var i2 = r2[2] - 1 || 0, s2 = (r2[7] || "0").substring(0, 3);
@@ -6652,7 +6653,7 @@ var dayjs_min = { exports: {} };
         if (!this.isValid())
           return n2.invalidDate || $;
         var r2 = t3 || "YYYY-MM-DDTHH:mm:ssZ", i2 = O.z(this), s2 = this.$H, u2 = this.$m, a2 = this.$M, o2 = n2.weekdays, f2 = n2.months, h3 = function(t4, n3, i3, s3) {
-          return t4 && (t4[n3] || t4(e2, r2)) || i3[n3].substr(0, s3);
+          return t4 && (t4[n3] || t4(e2, r2)) || i3[n3].slice(0, s3);
         }, c2 = function(t4) {
           return O.s(s2 % 12 || 12, t4, "0");
         }, d2 = n2.meridiem || function(t4, e3, n3) {
@@ -6687,9 +6688,9 @@ var dayjs_min = { exports: {} };
       }, m2.toString = function() {
         return this.$d.toUTCString();
       }, M2;
-    }(), b = _.prototype;
-    return w.prototype = b, [["$ms", r], ["$s", i], ["$m", s], ["$H", u], ["$W", a], ["$M", f], ["$y", c], ["$D", d]].forEach(function(t3) {
-      b[t3[1]] = function(e2) {
+    }(), T = _.prototype;
+    return w.prototype = T, [["$ms", r], ["$s", i], ["$m", s], ["$H", u], ["$W", a], ["$M", f], ["$y", c], ["$D", d]].forEach(function(t3) {
+      T[t3[1]] = function(e2) {
         return this.$g(e2, t3[0], t3[1]);
       };
     }), w.extend = function(t3, e2) {
@@ -7316,7 +7317,9 @@ const _sfc_main$25 = {
         } else if (typeof this[size] === "object") {
           let props = this[size];
           Object.keys(props).forEach((prop2) => {
-            classList.push(prop2 !== "span" ? `${prefixCls$16}-${size}-${prop2}-${props[prop2]}` : `${prefixCls$16}-span-${size}-${props[prop2]}`);
+            classList.push(
+              prop2 !== "span" ? `${prefixCls$16}-${size}-${prop2}-${props[prop2]}` : `${prefixCls$16}-span-${size}-${props[prop2]}`
+            );
           });
         }
       });
@@ -8743,10 +8746,11 @@ var LoginItem = {
   },
   render() {
     const finalProps = this.handleGetProps();
-    const $input = h(Input, __spreadProps(__spreadValues({}, finalProps), {
+    const $input = h(Input, {
+      ...finalProps,
       "onUpdate:modelValue": this.handleChange,
       "onOn-enter": this.handleEnter
-    }));
+    });
     const $formitem = h(FormItem, {
       prop: this.prop,
       rules: this.rules
@@ -8863,13 +8867,15 @@ const _sfc_main$22 = {
     } else {
       buttonSlot = () => "\u83B7\u53D6\u9A8C\u8BC1\u7801";
     }
-    const $button = h(_sfc_main$2c, __spreadProps(__spreadValues({}, defaultButtonProps), {
+    const $button = h(_sfc_main$2c, {
+      ...defaultButtonProps,
       onClick: this.handleClickCaptcha
-    }), buttonSlot);
-    const $input = h(Input, __spreadProps(__spreadValues({}, finalProps), {
+    }, buttonSlot);
+    const $input = h(Input, {
+      ...finalProps,
       "onUpdate:modelValue": this.handleChange,
       "onOn-enter": this.handleEnter
-    }));
+    });
     const $colinput = h(Col, {
       span: 16
     }, () => [$input]);
@@ -13505,7 +13511,7 @@ const _sfc_main$1M = {
       e.preventDefault();
       e.stopPropagation();
       this.blurColor();
-      const grid = __spreadValues({}, this.grid);
+      const grid = { ...this.grid };
       if (e[this.powerKey]) {
         if (direction < 0) {
           grid[axis] = 1;
@@ -15171,7 +15177,7 @@ var countUp_min = { exports: {} };
         var n3, t4, e3, i2, r2, o2, s2 = a3 < 0;
         if (a3 = Math.abs(a3).toFixed(l.decimals), a3 += "", n3 = a3.split("."), t4 = n3[0], e3 = n3.length > 1 ? l.options.decimal + n3[1] : "", l.options.useGrouping) {
           for (i2 = "", r2 = 0, o2 = t4.length; r2 < o2; ++r2)
-            r2 !== 0 && r2 % 3 === 0 && (i2 = l.options.separator + i2), i2 = t4[o2 - r2 - 1] + i2;
+            0 !== r2 && r2 % 3 === 0 && (i2 = l.options.separator + i2), i2 = t4[o2 - r2 - 1] + i2;
           t4 = i2;
         }
         return l.options.numerals.length && (t4 = t4.replace(/[0-9]/g, function(a4) {
@@ -15184,15 +15190,15 @@ var countUp_min = { exports: {} };
         return t4 * (-Math.pow(2, -10 * a3 / e3) + 1) * 1024 / 1023 + n3;
       }
       function u(a3) {
-        return typeof a3 == "number" && !isNaN(a3);
+        return "number" == typeof a3 && !isNaN(a3);
       }
       var l = this;
       if (l.version = function() {
         return "1.9.3";
-      }, l.options = { useEasing: true, useGrouping: true, separator: ",", decimal: ".", easingFn: s, formattingFn: o, prefix: "", suffix: "", numerals: [] }, r && typeof r == "object")
+      }, l.options = { useEasing: true, useGrouping: true, separator: ",", decimal: ".", easingFn: s, formattingFn: o, prefix: "", suffix: "", numerals: [] }, r && "object" == typeof r)
         for (var m in l.options)
-          r.hasOwnProperty(m) && r[m] !== null && (l.options[m] = r[m]);
-      l.options.separator === "" ? l.options.useGrouping = false : l.options.separator = "" + l.options.separator;
+          r.hasOwnProperty(m) && null !== r[m] && (l.options[m] = r[m]);
+      "" === l.options.separator ? l.options.useGrouping = false : l.options.separator = "" + l.options.separator;
       for (var d = 0, c = ["webkit", "moz", "ms", "o"], f = 0; f < c.length && !window.requestAnimationFrame; ++f)
         window.requestAnimationFrame = window[c[f] + "RequestAnimationFrame"], window.cancelAnimationFrame = window[c[f] + "CancelAnimationFrame"] || window[c[f] + "CancelRequestAnimationFrame"];
       window.requestAnimationFrame || (window.requestAnimationFrame = function(a3, n3) {
@@ -15203,10 +15209,10 @@ var countUp_min = { exports: {} };
       }), window.cancelAnimationFrame || (window.cancelAnimationFrame = function(a3) {
         clearTimeout(a3);
       }), l.initialize = function() {
-        return !!l.initialized || (l.error = "", l.d = typeof a2 == "string" ? document.getElementById(a2) : a2, l.d ? (l.startVal = Number(n2), l.endVal = Number(t3), u(l.startVal) && u(l.endVal) ? (l.decimals = Math.max(0, e2 || 0), l.dec = Math.pow(10, l.decimals), l.duration = 1e3 * Number(i) || 2e3, l.countDown = l.startVal > l.endVal, l.frameVal = l.startVal, l.initialized = true, true) : (l.error = "[CountUp] startVal (" + n2 + ") or endVal (" + t3 + ") is not a number", false)) : (l.error = "[CountUp] target is null or undefined", false));
+        return !!l.initialized || (l.error = "", l.d = "string" == typeof a2 ? document.getElementById(a2) : a2, l.d ? (l.startVal = Number(n2), l.endVal = Number(t3), u(l.startVal) && u(l.endVal) ? (l.decimals = Math.max(0, e2 || 0), l.dec = Math.pow(10, l.decimals), l.duration = 1e3 * Number(i) || 2e3, l.countDown = l.startVal > l.endVal, l.frameVal = l.startVal, l.initialized = true, true) : (l.error = "[CountUp] startVal (" + n2 + ") or endVal (" + t3 + ") is not a number", false)) : (l.error = "[CountUp] target is null or undefined", false));
       }, l.printValue = function(a3) {
         var n3 = l.options.formattingFn(a3);
-        l.d.tagName === "INPUT" ? this.d.value = n3 : l.d.tagName === "text" || l.d.tagName === "tspan" ? this.d.textContent = n3 : this.d.innerHTML = n3;
+        "INPUT" === l.d.tagName ? this.d.value = n3 : "text" === l.d.tagName || "tspan" === l.d.tagName ? this.d.textContent = n3 : this.d.innerHTML = n3;
       }, l.count = function(a3) {
         l.startTime || (l.startTime = a3), l.timestamp = a3;
         var n3 = a3 - l.startTime;
@@ -15283,7 +15289,14 @@ const _sfc_main$1D = {
   methods: {
     init() {
       if (!this.CountUp) {
-        this.CountUp = new CountUp$1(this.$el, this.start, this.end, this.decimals, this.duration, this.options);
+        this.CountUp = new CountUp$1(
+          this.$el,
+          this.start,
+          this.end,
+          this.decimals,
+          this.duration,
+          this.options
+        );
         this.CountUp.start(() => {
           this.callback(this.CountUp);
         });
@@ -15575,9 +15588,25 @@ fecha.parse = function(dateStr, format2, i18nSettings) {
   var date3;
   if (dateInfo.timezoneOffset != null) {
     dateInfo.minute = +(dateInfo.minute || 0) - +dateInfo.timezoneOffset;
-    date3 = new Date(Date.UTC(dateInfo.year || today.getFullYear(), dateInfo.month || 0, dateInfo.day || 1, dateInfo.hour || 0, dateInfo.minute || 0, dateInfo.second || 0, dateInfo.millisecond || 0));
+    date3 = new Date(Date.UTC(
+      dateInfo.year || today.getFullYear(),
+      dateInfo.month || 0,
+      dateInfo.day || 1,
+      dateInfo.hour || 0,
+      dateInfo.minute || 0,
+      dateInfo.second || 0,
+      dateInfo.millisecond || 0
+    ));
   } else {
-    date3 = new Date(dateInfo.year || today.getFullYear(), dateInfo.month || 0, dateInfo.day || 1, dateInfo.hour || 0, dateInfo.minute || 0, dateInfo.second || 0, dateInfo.millisecond || 0);
+    date3 = new Date(
+      dateInfo.year || today.getFullYear(),
+      dateInfo.month || 0,
+      dateInfo.day || 1,
+      dateInfo.hour || 0,
+      dateInfo.minute || 0,
+      dateInfo.second || 0,
+      dateInfo.millisecond || 0
+    );
   }
   return date3;
 };
@@ -16226,10 +16255,11 @@ const _sfc_main$1C = {
       const col = column % columnsPerPicker;
       if (horizontal) {
         const time = this.internalValue.map(extractTime);
-        this.focusedTime = __spreadProps(__spreadValues({}, this.focusedTime), {
+        this.focusedTime = {
+          ...this.focusedTime,
           column,
           time
-        });
+        };
         timePickers.forEach((instance, i) => {
           if (i === pickerIndex)
             instance.updateFocusedTime(col, time[pickerIndex]);
@@ -16250,9 +16280,10 @@ const _sfc_main$1C = {
           time[col] = nextValue;
           return time;
         });
-        this.focusedTime = __spreadProps(__spreadValues({}, this.focusedTime), {
+        this.focusedTime = {
+          ...this.focusedTime,
           time: times
-        });
+        };
         timePickers.forEach((instance, i) => {
           if (i === pickerIndex)
             instance.updateFocusedTime(col, times[i]);
@@ -16269,9 +16300,17 @@ const _sfc_main$1C = {
       }
       if (shift) {
         if (this.type === "year") {
-          this.focusedDate = new Date(this.focusedDate.getFullYear() + mapPossibleValues(direction, 0, 10), this.focusedDate.getMonth(), this.focusedDate.getDate());
+          this.focusedDate = new Date(
+            this.focusedDate.getFullYear() + mapPossibleValues(direction, 0, 10),
+            this.focusedDate.getMonth(),
+            this.focusedDate.getDate()
+          );
         } else {
-          this.focusedDate = new Date(this.focusedDate.getFullYear() + mapPossibleValues(direction, 0, 1), this.focusedDate.getMonth() + mapPossibleValues(direction, 1, 0), this.focusedDate.getDate());
+          this.focusedDate = new Date(
+            this.focusedDate.getFullYear() + mapPossibleValues(direction, 0, 1),
+            this.focusedDate.getMonth() + mapPossibleValues(direction, 1, 0),
+            this.focusedDate.getDate()
+          );
         }
         const position = direction.match(/left|down/) ? "prev" : "next";
         const double = direction.match(/up|down/) ? "-double" : "";
@@ -16354,7 +16393,10 @@ const _sfc_main$1C = {
       this.handleFormItemChange("change", "");
       this.emitChange(this.type);
       this.reset();
-      setTimeout(() => this.onSelectionModeChange(this.type), 500);
+      setTimeout(
+        () => this.onSelectionModeChange(this.type),
+        500
+      );
     },
     emitChange(type2) {
       nextTick(() => {
@@ -16419,9 +16461,10 @@ const _sfc_main$1C = {
       }
       if (this.internalValue[0])
         this.focusedDate = this.internalValue[0];
-      this.focusedTime = __spreadProps(__spreadValues({}, this.focusedTime), {
+      this.focusedTime = {
+        ...this.focusedTime,
         time: this.internalValue.map(extractTime)
-      });
+      };
       if (!this.isConfirm)
         this.onSelectionModeChange(this.type);
       if (!this.isConfirm)
@@ -16966,14 +17009,15 @@ const _sfc_main$1B = {
           cell.date.setTime(cell.date.getTime() + cell.date.getTimezoneOffset() * 6e4 + 480 * 60 * 1e3);
         const time = cell.date && clearHours(cell.date);
         const dateIsInCurrentMonth = cell.date && tableMonth === cell.date.getMonth();
-        return __spreadProps(__spreadValues({}, cell), {
+        return {
+          ...cell,
           type: time === today ? "today" : cell.type,
           selected: dateIsInCurrentMonth && selectedDays.includes(time),
           disabled: cell.date && disabledTestFn && disabledTestFn(new Date(time)),
           range: dateIsInCurrentMonth && isRange && isInRange(time, rangeStart, rangeEnd),
           start: dateIsInCurrentMonth && isRange && time === minDay,
           end: dateIsInCurrentMonth && isRange && time === maxDay
-        });
+        };
       }).cells.slice(this.showWeekNumbers ? 8 : 0);
     }
   },
@@ -17319,9 +17363,10 @@ const _sfc_main$1y = {
         const value = values[i];
         if (this[part] === value)
           return obj;
-        return __spreadProps(__spreadValues({}, obj), {
+        return {
+          ...obj,
           [part]: value
-        });
+        };
       }, {});
       if (Object.keys(changes).length > 0) {
         this.emitChange(changes);
@@ -17625,7 +17670,10 @@ var Mixin$1 = {
       this.$emit("on-pick-click");
     },
     resetView() {
-      setTimeout(() => this.currentView = this.selectionMode, 500);
+      setTimeout(
+        () => this.currentView = this.selectionMode,
+        500
+      );
     },
     handleClear() {
       this.dates = this.dates.map(() => null);
@@ -17707,7 +17755,10 @@ const _sfc_main$1w = {
     disabledHMS() {
       const disabledTypes = ["disabledHours", "disabledMinutes", "disabledSeconds"];
       if (this.disabledDate === returnFalse || !this.modelValue[0]) {
-        const disabled = disabledTypes.reduce((obj, type2) => (obj[type2] = this[type2], obj), {});
+        const disabled = disabledTypes.reduce(
+          (obj, type2) => (obj[type2] = this[type2], obj),
+          {}
+        );
         return disabled;
       } else {
         const slots = [24, 60, 60];
@@ -17723,7 +17774,10 @@ const _sfc_main$1w = {
           }
           return toDisable.filter(unique);
         });
-        return disabledTypes.reduce((obj, type2, i) => (obj[type2] = disabledHMS[i], obj), {});
+        return disabledTypes.reduce(
+          (obj, type2, i) => (obj[type2] = disabledHMS[i], obj),
+          {}
+        );
       }
     }
   },
@@ -17737,7 +17791,9 @@ const _sfc_main$1w = {
   methods: {
     handleChange(date3, emit = true) {
       const newDate = new Date(this.date);
-      Object.keys(date3).forEach((type2) => newDate[`set${capitalize$1(type2)}`](date3[type2]));
+      Object.keys(date3).forEach(
+        (type2) => newDate[`set${capitalize$1(type2)}`](date3[type2])
+      );
       if (emit)
         this.$emit("on-pick", newDate, "time");
     }
@@ -18079,7 +18135,7 @@ function _sfc_render$1g(_ctx, _cache, $props, $setup, $data, $options) {
           "focused-date": _ctx.focusedDate,
           onOnPick: $options.panelPickerHandlers,
           onOnPickClick: _ctx.handlePickClick
-        }, null, 8, ["table-date", "show-week-numbers", "model-value", "selection-mode", "disabled-date", "focused-date", "onOnPick", "onOnPickClick"])) : createCommentVNode("", true)
+        }, null, 40, ["table-date", "show-week-numbers", "model-value", "selection-mode", "disabled-date", "focused-date", "onOnPick", "onOnPickClick"])) : createCommentVNode("", true)
       ], 2),
       withDirectives(createElementVNode("div", {
         class: normalizeClass([$data.prefixCls + "-content"])
@@ -18460,7 +18516,11 @@ const _sfc_main$1s = {
         const currentDate = this[`${otherPanel}PanelDate`];
         const temp = new Date(currentDate);
         if (type2 === "Month") {
-          const nextMonthLastDate = new Date(temp.getFullYear(), temp.getMonth() + increment + 1, 0).getDate();
+          const nextMonthLastDate = new Date(
+            temp.getFullYear(),
+            temp.getMonth() + increment + 1,
+            0
+          ).getDate();
           temp.setDate(Math.min(nextMonthLastDate, temp.getDate()));
         }
         temp[`set${type2}`](temp[`get${type2}`]() + increment);
@@ -18598,7 +18658,7 @@ function _sfc_render$1e(_ctx, _cache, $props, $setup, $data, $options) {
           onOnChangeRange: $options.handleChangeRange,
           onOnPick: $options.panelPickerHandlers.left,
           onOnPickClick: _ctx.handlePickClick
-        }, null, 8, ["table-date", "disabled-date", "range-state", "show-week-numbers", "model-value", "focused-date", "onOnChangeRange", "onOnPick", "onOnPickClick"])) : createCommentVNode("", true)
+        }, null, 40, ["table-date", "disabled-date", "range-state", "show-week-numbers", "model-value", "focused-date", "onOnChangeRange", "onOnPick", "onOnPickClick"])) : createCommentVNode("", true)
       ], 2), [
         [vShow, !_ctx.isTime]
       ]),
@@ -18660,7 +18720,7 @@ function _sfc_render$1e(_ctx, _cache, $props, $setup, $data, $options) {
           onOnChangeRange: $options.handleChangeRange,
           onOnPick: $options.panelPickerHandlers.right,
           onOnPickClick: _ctx.handlePickClick
-        }, null, 8, ["table-date", "range-state", "disabled-date", "show-week-numbers", "model-value", "focused-date", "onOnChangeRange", "onOnPick", "onOnPickClick"])) : createCommentVNode("", true)
+        }, null, 40, ["table-date", "range-state", "disabled-date", "show-week-numbers", "model-value", "focused-date", "onOnChangeRange", "onOnPick", "onOnPickClick"])) : createCommentVNode("", true)
       ], 2), [
         [vShow, !_ctx.isTime]
       ]),
@@ -18761,9 +18821,10 @@ const _sfc_main$1r = {
       class: "ivu-description-detail"
     }, this.$slots.default());
     const children = termNode ? [termNode, detailNode] : [detailNode];
-    return h(Col, __spreadProps(__spreadValues({}, responsive[this.DescriptionListInstance.col]), {
+    return h(Col, {
+      ...responsive[this.DescriptionListInstance.col],
       style: this.styles
-    }), () => children);
+    }, () => children);
   }
 };
 const _sfc_main$1q = {
@@ -23580,13 +23641,13 @@ const _sfc_main$17 = {
         style2["-webkit-line-clamp"] = this.mergedEllipsisConfig.rows;
       }
       let ellipsisExtraNode = null;
-      const baseNode = h(this.component, __spreadProps(__spreadValues({
+      const baseNode = h(this.component, {
         ref: "typography",
-        class: this.classes
-      }, this.linkProps), {
+        class: this.classes,
+        ...this.linkProps,
         style: style2,
         onClick: this.handleClickContent
-      }), [contentNodes, ellipsisExtraNode]);
+      }, [contentNodes, ellipsisExtraNode]);
       if (this.ellipsis && !this.ellipsisExpanded && this.isEllipsis && this.mergedEllipsisConfig.tooltip) {
         return h(Tooltip, {
           content: this.mergedEllipsisConfig.tooltip === true ? this.handleGetContent() : this.mergedEllipsisConfig.tooltip,
@@ -23608,9 +23669,11 @@ const _sfc_main$16 = {
   name: "Link",
   mixins: [baseProps],
   render() {
-    return h(_sfc_main$17, __spreadValues(__spreadProps(__spreadValues({}, this.$props), {
-      component: "a"
-    }), this.commonEvents()), this.commonSlots());
+    return h(_sfc_main$17, {
+      ...this.$props,
+      component: "a",
+      ...this.commonEvents()
+    }, this.commonSlots());
   }
 };
 function handleGetIndex() {
@@ -25204,24 +25267,28 @@ Modal.newInstance = (properties) => {
           })
         ]);
       }
-      return h(Modal, Object.assign({}, _props, {
-        width: this.width,
-        scrollable: this.scrollable,
-        closable: this.closable,
-        ref: "modal"
-      }, {
-        modelValue: this.visible,
-        "onUpdate:modelValue": (status) => this.visible = status,
-        "onOn-cancel": this.cancel
-      }), () => h("div", {
-        class: prefixCls$t
-      }, [
-        head_render,
-        body_render,
-        h("div", {
-          class: `${prefixCls$t}-footer`
-        }, footerVNodes)
-      ]));
+      return h(
+        Modal,
+        Object.assign({}, _props, {
+          width: this.width,
+          scrollable: this.scrollable,
+          closable: this.closable,
+          ref: "modal"
+        }, {
+          modelValue: this.visible,
+          "onUpdate:modelValue": (status) => this.visible = status,
+          "onOn-cancel": this.cancel
+        }),
+        () => h("div", {
+          class: prefixCls$t
+        }, [
+          head_render,
+          body_render,
+          h("div", {
+            class: `${prefixCls$t}-footer`
+          }, footerVNodes)
+        ])
+      );
     },
     computed: {
       iconTypeCls() {
@@ -29053,9 +29120,11 @@ const _sfc_main$I = {
   name: "Paragraph",
   mixins: [baseProps],
   render() {
-    return h(_sfc_main$17, __spreadValues(__spreadProps(__spreadValues({}, this.$props), {
-      component: "div"
-    }), this.commonEvents()), this.commonSlots());
+    return h(_sfc_main$17, {
+      ...this.$props,
+      component: "div",
+      ...this.commonEvents()
+    }, this.commonSlots());
   }
 };
 const _sfc_main$H = {
@@ -30111,7 +30180,10 @@ const _sfc_main$B = {
         const initialScrollTop = container.scrollTop;
         for (let i = 0; i < 20; i++) {
           setTimeout(() => {
-            bottomLoaderHeight = Math.max(bottomLoaderHeight, this.$refs.bottomLoader.getBoundingClientRect().height);
+            bottomLoaderHeight = Math.max(
+              bottomLoaderHeight,
+              this.$refs.bottomLoader.getBoundingClientRect().height
+            );
             container.scrollTop = initialScrollTop + bottomLoaderHeight;
           }, i * 50);
         }
@@ -30370,7 +30442,11 @@ function animate(parent) {
       return scrollSettings.end(COMPLETE);
     }
     let easeValue = 1 - scrollSettings.ease(timeValue);
-    setElementScroll(parent, location.x - location.differenceX * easeValue, location.y - location.differenceY * easeValue);
+    setElementScroll(
+      parent,
+      location.x - location.differenceX * easeValue,
+      location.y - location.differenceY * easeValue
+    );
     animate(parent);
   });
 }
@@ -31610,16 +31686,20 @@ const _sfc_main$w = {
     } else if (this.$slots.split) {
       split = this.$slots.split();
     }
-    return h("div", { class: this.classes, style: this.styles }, items.map((child, index2) => {
-      const item = h("div", { class: "ivu-space-item" }, [child]);
-      if (split && index2 + 1 < len) {
-        return [
-          item,
-          h("div", { class: "ivu-space-split" }, [split])
-        ];
-      }
-      return item;
-    }));
+    return h(
+      "div",
+      { class: this.classes, style: this.styles },
+      items.map((child, index2) => {
+        const item = h("div", { class: "ivu-space-item" }, [child]);
+        if (split && index2 + 1 < len) {
+          return [
+            item,
+            h("div", { class: "ivu-space-split" }, [split])
+          ];
+        }
+        return item;
+      })
+    );
   }
 };
 const _sfc_main$v = {
@@ -32370,9 +32450,10 @@ const _sfc_main$q = {
       long: true
     };
     const finalProps = Object.assign(defaultProps, this.$attrs);
-    const $button = h(_sfc_main$2c, __spreadProps(__spreadValues({}, finalProps), {
+    const $button = h(_sfc_main$2c, {
+      ...finalProps,
       onClick: this.handleSubmit
-    }), this.$slots.default || (() => "\u767B\u5F55"));
+    }, this.$slots.default || (() => "\u767B\u5F55"));
     return h("div", {
       class: "ivu-login-submit"
     }, [$button]);
@@ -33619,11 +33700,11 @@ const _sfc_main$l = {
                 treeLevel: this.getLevel(row._rowKey),
                 key: column._columnKey
               });
-              const $td = h2("td", __spreadProps(__spreadValues({
-                class: this.alignCls(column, row)
-              }, this.getSpan(row, column, index2, colIndex)), {
+              const $td = h2("td", {
+                class: this.alignCls(column, row),
+                ...this.getSpan(row, column, index2, colIndex),
                 onClick: (e) => this.clickCell(row, column, column.key, e)
-              }), [$tableCell]);
+              }, [$tableCell]);
               $tds.push($td);
             }
           });
@@ -33681,11 +33762,11 @@ const _sfc_main$l = {
             expanded: this.rowExpanded(row._index),
             key: column._columnKey
           });
-          const $td = h("td", __spreadProps(__spreadValues({
-            class: this.alignCls(column, row)
-          }, this.getSpan(row, column, index2, colIndex)), {
+          const $td = h("td", {
+            class: this.alignCls(column, row),
+            ...this.getSpan(row, column, index2, colIndex),
             onClick: (e) => this.clickCell(row, column, column.key, e)
-          }), [$tableCell]);
+          }, [$tableCell]);
           $tds.push($td);
         }
       });
@@ -35965,9 +36046,11 @@ const _sfc_main$f = {
   name: "Text",
   mixins: [baseProps],
   render() {
-    return h(_sfc_main$17, __spreadValues(__spreadProps(__spreadValues({}, this.$props), {
-      component: "span"
-    }), this.commonEvents()), this.commonSlots());
+    return h(_sfc_main$17, {
+      ...this.$props,
+      component: "span",
+      ...this.commonEvents()
+    }, this.commonSlots());
   }
 };
 const prefixCls$6 = "ivu-timeline";
@@ -36122,9 +36205,11 @@ const _sfc_main$c = {
     }
   },
   render() {
-    return h(_sfc_main$17, __spreadValues(__spreadProps(__spreadValues({}, this.$props), {
-      component: `h${this.level}`
-    }), this.commonEvents()), this.commonSlots());
+    return h(_sfc_main$17, {
+      ...this.$props,
+      component: `h${this.level}`,
+      ...this.commonEvents()
+    }, this.commonSlots());
   }
 };
 const _sfc_main$b = {
@@ -38510,7 +38595,8 @@ const directives = {
   resize,
   "line-clamp": lineClamp
 };
-const ViewUI = __spreadProps(__spreadValues({}, components), {
+const ViewUI = {
+  ...components,
   iButton: _sfc_main$2c,
   iCircle: Circle,
   iCol: Col,
@@ -38526,7 +38612,7 @@ const ViewUI = __spreadProps(__spreadValues({}, components), {
   iSwitch: Switch,
   iTable: Table,
   iTime: Time
-});
+};
 const install = function(app, opts = {}) {
   if (install.installed)
     return;
@@ -38630,11 +38716,12 @@ const lang = (code) => {
   else
     console.log(`The ${code} language pack is not loaded.`);
 };
-const API = __spreadValues({
+const API = {
   version,
   locale,
   i18n,
   install,
-  lang
-}, components);
+  lang,
+  ...components
+};
 export { Affix, Alert, Anchor, AnchorLink, _sfc_main$2q as Auth, AutoComplete, Avatar, AvatarList, BackTop, Badge, Breadcrumb, BreadcrumbItem, _sfc_main$2c as Button, ButtonGroup, Calendar, _sfc_main$22 as Captcha, Card, Carousel, CarouselItem, Cascader, Cell, CellGroup, Checkbox, CheckboxGroup, Circle, City, Col, Collapse, ColorPicker, Content, Copy, CountDown, CountUp, DatePicker, _sfc_main$1r as Description, DescriptionList, Divider, Drawer, Dropdown, DropdownItem, DropdownMenu, Ellipsis, _sfc_main$1l as Email, Exception, Footer, FooterToolbar, Form, FormItem, GlobalFooter, Grid, GridItem, Header, Icon, Image, ImagePreview, Input, InputNumber, Layout, _sfc_main$16 as Link, List$1 as List, ListItem, ListItemMeta, index$3 as LoadingBar, Login, Menu, MenuGroup, MenuItem, $Message as Message, _sfc_main$Z as Mobile, Modal, index$2 as Notice, Notification, NotificationItem, NotificationTab, NumberInfo, Numeral, iOption as Option, OptionGroup, Page, PageHeader, Panel, _sfc_main$I as Paragraph, _sfc_main$H as Password, Poptip, iProgress as Progress, Radio, RadioGroup, Rate, Result, Row, Scroll, index$1 as ScrollIntoView, index as ScrollTop, Select, Sider, Skeleton, SkeletonItem, Slider, _sfc_main$w as Space, Spin, Split, Step, Steps, Submenu, _sfc_main$q as Submit, Switch, TabPane, Table, TablePaste, Tabs, Tag, TagSelect, TagSelectOption, _sfc_main$f as Text, Time, TimePicker, Timeline, TimelineItem, _sfc_main$c as Title, Tooltip, _sfc_main$8 as Transfer, Tree, TreeSelect, Trend, Typography, Upload, _sfc_main$1 as UserName, WordCount, API as default, i18n, install, lang, locale, version };

@@ -88,7 +88,7 @@
                             if (Array.isArray(vNode.children)) {
                                 vNodes = vNodes.concat(vNode.children)
                             }
-                        }           
+                        }
                     }
                 }
                 const focusOption = slotOptions[focusIndex]
